@@ -100,6 +100,13 @@ fi
 
 func_clean
 
+if [ ! -f $CNZONE_FILE ]
+then
+	wget -P $REDSOCKS_DIR http://www.ipdeny.com/ipblocks/data/countries/cn.zone
+	func_save
+	logger -t "SET FILE SAVED."
+fi
+
 if [ ! -f $LOCK ]
 then
 	ipset destroy $SET_NAME
@@ -108,13 +115,6 @@ then
 	touch $LOCK
 	logger -t $BINARY_NAME "SET LOCKED"
 fi
-
-if [ ! -f $CNZONE_FILE ]
-then
-	wget -P $REDSOCKS_DIR http://www.ipdeny.com/ipblocks/data/countries/cn.zone
-	func_save
-	logger -t "SET FILE SAVED."
-fi	
 
 iptables -t nat -N $CHAIN_NAME
 iptables -t nat -A $CHAIN_NAME -d $REMOTE_IP -j RETURN
