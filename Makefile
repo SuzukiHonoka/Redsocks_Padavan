@@ -1,16 +1,27 @@
-SRC_NAME=redsocks-release-0.5-11-g19b822e
-SRC_URL=https://github.com/SuzukiHonoka/redsocks_for_mipsel/releases/download/release-0.5-11-g19b822e/redsocks
+BIN_NAME=redsocks
+SRC_NAME=$(BIN_NAME).sh
+BIN_URL=https://github.com/SuzukiHonoka/redsocks_for_mipsel/releases/latest/download/redsocks
+SRC_URL=https://raw.githubusercontent.com/SuzukiHonoka/Redsocks_Padavan/master/redsocks.sh
+BIN_PATH=/usr/bin
 
 THISDIR = $(shell pwd)
 
-all: download_test
+all: bin_download src_download
 
-download_test:
-	( if [ ! -f redsocks ]; then \
-		wget -t5 --timeout=10 -O redsocks $(SRC_URL); \
+bin_download:
+	( if [ ! -f $(BIN_NAME) ]; then \
+		wget $(BIN_URL); \
 	fi )
 
+src_download:
+	( if [ ! -f $(SRC_NAME) ]; then \
+		wget $(SRC_URL); \
+	fi )
+
+clean:
+	rm $(THISDIR)/$(BIN_NAME) && rm $(THISDIR)/$(SRC_NAME)
+
 romfs:
-	$(ROMFSINST) $(THISDIR)/redsocks /usr/bin/redsocks
-	$(ROMFSINST) $(THISDIR)/redsocks.sh /usr/bin/redsocks.sh
-	$(ROMFSINST) -p +x /usr/bin/redsocks.sh
+	$(ROMFSINST) $(THISDIR)/$(BIN_NAME) $(BIN_PATH)/$(BIN_NAME)
+	$(ROMFSINST) $(THISDIR)/$(SRC_NAME) $(BIN_PATH)/$(SRC_NAME)
+	$(ROMFSINST) -p +x $(BIN_PATH)/$(SRC_NAME)
